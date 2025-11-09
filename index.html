@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد إيميلات Gmail Dot Trick</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e4;
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: #b4b4b4;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: #0f1624;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #e4e4e4;
+            font-size: 1rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #2a3447;
+            border-radius: 10px;
+            background: #1a2332;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .input-wrapper input::placeholder {
+            color: #6a7a8f;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: #2a3447;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #2a3447;
+            color: #e4e4e4;
+        }
+
+        .btn-secondary:hover {
+            background: #3a4557;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.3);
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 2px solid #e74c3c;
+            color: #ff6b6b;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 2px solid #2ecc71;
+            color: #5dff9f;
+        }
+
+        .alert-warning {
+            background: rgba(241, 196, 15, 0.2);
+            border: 2px solid #f1c40f;
+            color: #ffd93d;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-container.show {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #1a2332;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a90e2, #357abd);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #b4b4b4;
+            font-size: 0.9rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-count {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4a90e2;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 10px 15px;
+            border: 2px solid #2a3447;
+            border-radius: 8px;
+            background: #1a2332;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #4a90e2;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .results-container.show {
+            display: block;
+        }
+
+        .results-list {
+            background: #1a2332;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .results-list::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .results-list::-webkit-scrollbar-track {
+            background: #0f1624;
+            border-radius: 10px;
+        }
+
+        .results-list::-webkit-scrollbar-thumb {
+            background: #2a3447;
+            border-radius: 10px;
+        }
+
+        .results-list::-webkit-scrollbar-thumb:hover {
+            background: #3a4557;
+        }
+
+        .email-item {
+            padding: 12px 15px;
+            background: #0f1624;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border-right: 3px solid #4a90e2;
+            color: #e4e4e4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .email-item:hover {
+            background: #1e2a3f;
+            transform: translateX(-3px);
+        }
+
+        .email-item.hidden {
+            display: none;
+        }
+
+        .footer-note {
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #d4d4d4;
+        }
+
+        .footer-note strong {
+            color: #f1c40f;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .input-wrapper {
+                flex-direction: column;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- الترويسة -->
+        <div class="header">
+            <h1></h1>🔤 مولد إيميلات Gmail Dot Trick</h1>
+            <p>أداة مجانية لتوليد جميع تراكيب النقاط الممكنة لعنوان Gmail الخاص بك</p>
+        </div>
+
+        <!-- البطاقة الرئيسية -->
+        <div class="card">
+            <!-- رسائل التنبيه -->
+            <div id="alertBox" class="alert"></div>
+
+            <!-- حقل الإدخال -->
+            <div class="input-group">
+                <label for="emailInput">البريد الإلكتروني الأساسي</label>
+                <div class="input-wrapper">
+                    <input
+                        type="email"
+                        id="emailInput"
+                        placeholder="username@gmail.com"
+                        autocomplete="email"
+                    >
+                    <button class="btn btn-primary" id="generateBtn" onclick="generateEmails()">
+                        توليد
+                    </button>
+                </div>
+            </div>
+
+            <!-- شريط التقدم -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">جاري التوليد...</div>
+            </div>
+
+            <!-- نتائج التوليد -->
+            <div class="results-container" id="resultsContainer">
+                <div class="results-header">
+                    <div class="results-count" id="resultsCount">0 إيميل</div>
+                    <input
+                        type="text"
+                        class="search-box"
+                        id="searchBox"
+                        placeholder="🔍 بحث في النتائج..."
+                        onkeyup="filterResults()"
+                    >
+                </div>
+
+                <!-- قائمة النتائج -->
+                <div class="results-list" id="resultsList"></div>
+
+                <!-- أزرار الإجراءات -->
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="copyAll()">
+                        📋 نسخ الكل
+                    </button>
+                    <button class="btn btn-download" onclick="downloadResults()">
+                        💾 تحميل
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearAll()">
+                        🗑️ مسح
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ملاحظة قانونية -->
+        <div class="footer-note">
+            <strong>⚠️ تنبيه قانوني:</strong> هذه الأداة مصممة للأغراض التعليمية والمشروعة فقط. يُرجى استخدامها بمسؤولية واحترام سياسات Google وشروط الخدمة. لا نتحمل أي مسؤولية عن إساءة الاستخدام.
+        </div>
+    </div>
+
+    <script>
+        // متغيرات عامة
+        let generatedEmails = [];
+        const MAX_COMBINATIONS = 65536;
+
+        // التحقق من صحة البريد الإلكتروني
+        function validateEmail(email) {
+            const regex = /^[a-zA-Z0-9.]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regex.test(email);
+        }
+
+        // عرض رسالة تنبيه
+        function showAlert(message, type = 'error') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type} show`;
+
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 5000);
+        }
+
+        // إظهار/إخفاء شريط التقدم
+        function showProgress(show = true) {
+            const progressContainer = document.getElementById('progressContainer');
+            if (show) {
+                progressContainer.classList.add('show');
+            } else {
+                progressContainer.classList.remove('show');
+            }
+        }
+
+        // تحديث شريط التقدم
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+
+        // حساب عدد التركيبات الممكنة
+        function calculateCombinations(localPart) {
+            // إزالة النقاط الموجودة
+            const cleanLocal = localPart.replace(/\./g, '');
+            const length = cleanLocal.length;
+
+            // عدد المواضع الممكنة للنقاط = طول النص - 1
+            // كل موضع يمكن أن يحتوي أو لا يحتوي على نقطة = 2^(n-1)
+            if (length <= 1) return 1;
+            return Math.pow(2, length - 1);
+        }
+
+        // توليد كل تركيبات النقاط
+        function generateDotCombinations(localPart) {
+            // إزالة النقاط الموجودة
+            const cleanLocal = localPart.replace(/\./g, '');
+            const length = cleanLocal.length;
+
+            if (length <= 1) {
+                return [cleanLocal];
+            }
+
+            const combinations = [];
+            const totalCombinations = Math.pow(2, length - 1);
+
+            // توليد كل تركيبة
+            for (let i = 0; i < totalCombinations && i < MAX_COMBINATIONS; i++) {
+                let result = cleanLocal[0];
+
+                for (let j = 0; j < length - 1; j++) {
+                    // استخدام البت لتحديد وضع النقطة
+                    if (i & (1 << j)) {
+                        result += '.';
+                    }
+                    result += cleanLocal[j + 1];
+                }
+
+                combinations.push(result);
+            }
+
+            return combinations;
+        }
+
+        // دالة التوليد الرئيسية
+        async function generateEmails() {
+            const emailInput = document.getElementById('emailInput').value.trim();
+
+            // التحقق من الإدخال
+            if (!emailInput) {
+                showAlert('⚠️ يرجى إدخال عنوان بريد إلكتروني', 'error');
+                return;
+            }
+
+            if (!validateEmail(emailInput)) {
+                showAlert('❌ عنوان البريد الإلكتروني غير صالح', 'error');
+                return;
+            }
+
+            // فصل الجزء المحلي والدومين
+            const parts = emailInput.toLowerCase().split('@');
+            if (parts.length !== 2) {
+                showAlert('❌ تنسيق البريد الإلكتروني غير صحيح', 'error');
+                return;
+            }
+
+            const localPart = parts[0];
+            const domain = parts[1];
+
+            // التحقق من أن الدومين هو gmail.com
+            if (domain !== 'gmail.com') {
+                showAlert('❌ هذه الأداة تعمل فقط مع عناوين gmail.com', 'error');
+                return;
+            }
+
+            // حساب عدد التركيبات
+            const totalCombinations = calculateCombinations(localPart);
+
+            // التحقق من الحد الأقصى
+            if (totalCombinations > MAX_COMBINATIONS) {
+                showAlert(
+                    `⚠️ عدد التركيبات الممكنة (${totalCombinations.toLocaleString('ar-EG')}) يتجاوز الحد الأقصى (${MAX_COMBINATIONS.toLocaleString('ar-EG')}). سيتم توليد أول ${MAX_COMBINATIONS.toLocaleString('ar-EG')} تركيبة فقط.`,
+                    'warning'
+                );
+            }
+
+            // إظهار شريط التقدم
+            showProgress(true);
+            updateProgress(0, 'جاري بدء التوليد...');
+
+            // تعطيل زر التوليد
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.disabled = true;
+            document.querySelector('.card').classList.add('loading');
+
+            // تأخير صغير للسماح بتحديث الواجهة
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            try {
+                updateProgress(30, 'جاري توليد التركيبات...');
+
+                // توليد التركيبات
+                const combinations = generateDotCombinations(localPart);
+
+                updateProgress(60, 'جاري إنشاء القائمة...');
+
+                // إنشاء قائمة الإيميلات
+                generatedEmails = combinations.map(combo => `${combo}@${domain}`);
+
+                updateProgress(90, 'جاري عرض النتائج...');
+
+                // عرض النتائج
+                displayResults();
+
+                updateProgress(100, 'تم التوليد بنجاح!');
+
+                showAlert(`✅ تم توليد ${generatedEmails.length.toLocaleString('ar-EG')} عنوان بريد إلكتروني بنجاح!`, 'success');
+
+                // إخفاء شريط التقدم بعد ثانية
+                setTimeout(() => {
+                    showProgress(false);
+                }, 1000);
+
+            } catch (error) {
+                showAlert('❌ حدث خطأ أثناء التوليد: ' + error.message, 'error');
+                showProgress(false);
+            } finally {
+                // إعادة تفعيل الزر
+                generateBtn.disabled = false;
+                document.querySelector('.card').classList.remove('loading');
+            }
+        }
+
+        // عرض النتائج
+        function displayResults() {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const resultsList = document.getElementById('resultsList');
+            const resultsCount = document.getElementById('resultsCount');
+
+            // تحديث العداد
+            resultsCount.textContent = `${generatedEmails.length.toLocaleString('ar-EG')} إيميل`;
+
+            // إنشاء HTML للنتائج (أداء محسّن)
+            const fragment = document.createDocumentFragment();
+
+            generatedEmails.forEach(email => {
+                const div = document.createElement('div');
+                div.className = 'email-item';
+                div.textContent = email;
+                fragment.appendChild(div);
+            });
+
+            // تنظيف القائمة القديمة وإضافة الجديدة
+            resultsList.innerHTML = '';
+            resultsList.appendChild(fragment);
+
+            // إظهار حاوية النتائج
+            resultsContainer.classList.add('show');
+
+            // مسح صندوق البحث
+            document.getElementById('searchBox').value = '';
+        }
+
+        // تصفية النتائج
+        function filterResults() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const emailItems = document.querySelectorAll('.email-item');
+            let visibleCount = 0;
+
+            emailItems.forEach(item => {
+                const email = item.textContent.toLowerCase();
+                if (email.includes(searchTerm)) {
+                    item.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            // تحديث العداد
+            const resultsCount = document.getElementById('resultsCount');
+            if (searchTerm) {
+                resultsCount.textContent = `${visibleCount.toLocaleString('ar-EG')} من ${generatedEmails.length.toLocaleString('ar-EG')} إيميل`;
+            } else {
+                resultsCount.textContent = `${generatedEmails.length.toLocaleString('ar-EG')} إيميل`;
+            }
+        }
+
+        // نسخ جميع النتائج
+        async function copyAll() {
+            if (generatedEmails.length === 0) {
+                showAlert('❌ لا توجد نتائج للنسخ', 'error');
+                return;
+            }
+
+            try {
+                const text = generatedEmails.join('\n');
+                await navigator.clipboard.writeText(text);
+                showAlert(`✅ تم نسخ ${generatedEmails.length.toLocaleString('ar-EG')} عنوان إلى الحافظة`, 'success');
+            } catch (error) {
+                // طريقة بديلة للنسخ
+                const textarea = document.createElement('textarea');
+                textarea.value = generatedEmails.join('\n');
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+
+                try {
+                    document.execCommand('copy');
+                    showAlert(`✅ تم نسخ ${generatedEmails.length.toLocaleString('ar-EG')} عنوان إلى الحافظة`, 'success');
+                } catch (err) {
+                    showAlert('❌ فشل النسخ. يرجى المحاولة يدوياً', 'error');
+                }
+
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // تحميل النتائج كملف
+        function downloadResults() {
+            if (generatedEmails.length === 0) {
+                showAlert('❌ لا توجد نتائج للتحميل', 'error');
+                return;
+            }
+
+            const text = generatedEmails.join('\n');
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gmail-dot-trick-${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showAlert(`✅ تم تحميل ${generatedEmails.length.toLocaleString('ar-EG')} عنوان بنجاح`, 'success');
+        }
+
+        // مسح الكل
+        function clearAll() {
+            // مسح الإدخال
+            document.getElementById('emailInput').value = '';
+
+            // مسح النتائج
+            generatedEmails = [];
+            document.getElementById('resultsList').innerHTML = '';
+            document.getElementById('resultsContainer').classList.remove('show');
+
+            // إخفاء شريط التقدم
+            showProgress(false);
+
+            // مسح التنبيهات
+            document.getElementById('alertBox').classList.remove('show');
+
+            showAlert('✅ تم مسح جميع البيانات', 'success');
+        }
+
+        // السماح بالضغط على Enter لتوليد النتائج
+        document.getElementById('emailInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                generateEmails();
+            }
+        });
+
+        // إضافة معالج للصق النص
+        document.getElementById('emailInput').addEventListener('paste', function(event) {
+            setTimeout(() => {
+                this.value = this.value.trim();
+            }, 10);
+        });
+    </script>
+</body>
+</html>
